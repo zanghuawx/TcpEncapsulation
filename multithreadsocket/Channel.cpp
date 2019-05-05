@@ -1,6 +1,4 @@
-// Copyright 2019, Chen Shuaihao.
-//
-//Author: Chen Shuaihao
+
 //
 //Channel类，表示每一个客户端连接的通道
 //

@@ -1,6 +1,4 @@
-// Copyright 2019, Chen Shuaihao.
-//
-//Author: Chen Shuaihao
+
 
 #include "EventLoop.h"
 #include <iostream>

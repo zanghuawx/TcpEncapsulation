@@ -13,6 +13,11 @@
 #include <memory>
 #include "Channel.h"
 #include "EventLoop.h"
+#include "Any.h"
+
+
+
+
 
 //std::enable_shared_from_this 能让一个对象（假设其名为 t ，且已被一个 std::shared_ptr 对象 pt 管理）
 //安全地生成其他额外的 std::shared_ptr 实例（假设名为 pt1, pt2, ... ） ，它们与 pt 共享对象 t 的所有权。
@@ -45,6 +50,27 @@ public:
 	EventLoop* getLoop() const {
 		return loop_;
 	}
+
+	/*
+	void setContext(const any& context) {
+		context_ = context;
+	}
+
+	const any& getContext() const {
+		return context_;
+	}
+	*/
+	
+	
+	void setContext(void* context) {
+		context_ = context;
+	}
+
+	void* getContext() const {
+		return context_;
+	}
+	
+	
 	//添加本连接对应的事件到loop
 	void addChannelToLoop();
 	//发送数据的函数
@@ -89,6 +115,7 @@ public:
 	void setAsyncProcess(const bool asyncProcess) {
 		asyncProcess_ = asyncProcess;
 	}
+
 	
 private:
 	static int recvn(int fd, std::string& bufferin);
@@ -114,6 +141,8 @@ private:
 	std::string bufferIn_;
 	std::string bufferOut_;
 
+	//any context_;	//上下文
+	void* context_;	
 	
 };
 

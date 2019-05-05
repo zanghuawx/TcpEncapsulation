@@ -1,7 +1,4 @@
-// Copyright 2019, Chen Shuaihao.
-//
-//Author: Chen Shuaihao
-//
+
 //TcpConnection类，表示客户端连接
 
 
@@ -12,6 +9,8 @@
 #include <sys/socket.h>
 #include <errno.h>
 #include <unistd.h>
+
+
 
 #define BUFSIZE 4096
 
