@@ -2,32 +2,35 @@
 #ifndef _TESTCLIENTMULTI_H_
 #define _TESTCLIENTMULTI_H_
 
+#include "TcpClient.h"
 #include "ThreadPool.h"
-#include "TcpServer.h"
-#include <time.h>
 #include <unistd.h>
 
 
 class TestClientMulti {
 public:
-	TestClientMulti(int threadnum = 2000);
+	typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
+	typedef std::function<void (const TcpConnectionPtr&, std::string&)> MessageCallback;
+	typedef std::function<void (const TcpConnectionPtr&)> ConnectionCallback;
+	TestClientMulti(EventLoop * loop, const std::string& ip, const int port, const std::string& name = "client");
 	~TestClientMulti();
-
-	void init();
 	void start();
+	void onConnection(const TcpConnectionPtr& conn);
+	void onMessage(const TcpConnectionPtr& conn, std::string& message);
+	void sendMessage(const TcpConnectionPtr& conn, const std::string& message);
+	void onSendComplete(const TcpConnectionPtr& conn);
 
-	
+	std::shared_ptr<TcpClient> client_;
 private:
 	
-	
 
-	std::vector<TaskList*> taskList_;
-	int threadnum_;
-	ThreadPool pool;
 	
 };
 
+
+
 #endif
+
 
 
 
