@@ -1,0 +1,27 @@
+package contactproto;
+
+
+
+message Person {
+	required string name = 1 [default = "lishimin"];
+	optional int32 id = 2;
+	enum Groups {
+		FAMILY = 0;
+		FRIEND = 1;
+		CLASSMATE = 2;
+		WORKMATE = 3;
+		COLLEGE = 4;
+		STRANGER = 5;
+	}
+	message PhoneNumber {
+		optional string number = 1;
+		optional Groups group = 2;
+	}
+	repeated PhoneNumber phones = 3;	/* repeated equal c++ vector*/
+	optional int32 priority = 4 ;
+	optional string email = 5 ;
+}
+
+message ContactBook {
+	repeated Person people = 1;
+}

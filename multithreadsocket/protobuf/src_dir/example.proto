@@ -1,0 +1,8 @@
+package ptest;
+
+message person
+{
+	required string name=1;
+	required int32 id=12;
+	optional string email=3;
+}
