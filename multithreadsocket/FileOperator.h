@@ -23,26 +23,41 @@ public:
 	}FileStruct;
 	FileOperator();
 	FileOperator(const std::string& filename, const std::string& option = WriteCreateMode);
-	~FileOperator();
+	virtual ~FileOperator();
 	void selectFile(const std::string& filename, const std::string& option = WriteCreateMode);
-	bool open(const std::string& option);
+	bool open(const std::string& option = WriteCreateMode);
 	int writeToFile(const std::string& buffer, FILE* file);
 	int readFromFile(std::string& buffer, FILE* file);
 	void close(const TcpConnectionPtr & conn);
 	int sendByTcp(const TcpConnectionPtr& conn);
+	virtual int receiveFromTcp(const TcpConnectionPtr& conn, const std::string& message);
 	void onWriteComplete(const TcpConnectionPtr& conn);
+	virtual void onReceiveComplete(const TcpConnectionPtr& conn);
 
 	void setSended(const Callback& cb) {
 		onSended_ = cb;
 	}
+	void setReceived(const Callback& cb) {
+		onReceived_ = cb;
+	}
 	
+	bool isReceived_;
+	bool isSended;
 	static const std::string WriteCreateMode;
 	static const int MAX_BUFFER_LENGTH;
+
+	std::string& getOption() {
+		return option_;
+	}
+
+	FilePtr pFile_;
 private:
-	FILE* pFile_;
+	
 	std::string filename_;
 	std::string option_;
 	Callback onSended_;
+	Callback onReceived_;
+	
 };
 
 

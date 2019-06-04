@@ -10,39 +10,48 @@
 
 
 
-class PersonStruct {
+class PhoneNum {
 public:
-	PersonStruct() {
+	PhoneNum() : number_(), group_() {
+		
+	}
+	PhoneNum(const std::string& number, const contactproto::Person_Groups& group) : number_(number), group_(group) {
+		
+	}
+	~PhoneNum() {
+		
+	}
+	std::string getNumber() const {
+		return number_;
+	}
+	void setNumber(const std::string& number) {
+		number_ = number;
+	}
+	
+	contactproto::Person_Groups getGroup() const {
+		return group_;
+	}
+	void setGroup(const contactproto::Person_Groups& group) {
+		group_ = group;
+	}
+private:
+	std::string number_;
+	contactproto::Person_Groups group_;
+};
+
+class PersonStruct		     {
+public:
+	PersonStruct() : name_(), id_(), phoneNumList_(), priority_(), email_() {
+		
+	}
+	PersonStruct(const std::string& name, const int& id, const int& priority, const std::string email ) : name_(name), id_(id), 
+					phoneNumList_(), priority_(priority), email_(email) {
 		
 	}
 	~PersonStruct() {
 		
 	}
-	class PhoneNum {
-	public:
-		PhoneNum() {
-			
-		}
-		~PhoneNum() {
-			
-		}
-		std::string getNumber() const {
-			return number;
-		}
-		void setNumber(const std::string& number) {
-			number_ = number;
-		}
-		
-		contactproto::Person_Groups getGroup() const {
-			return group_;
-		}
-		void setGroup(const contactproto::Person_Groups& group) {
-			group_ = group;
-		}
-	private:
-		std::string number_;
-		contactproto::Person_Groups group_;
-	};
+	
 	
 	std::string getName() const {
 		return name_;
@@ -71,24 +80,38 @@ public:
 	void setEmail(const std::string& email) {
 		email_ = email;
 	}
-	
-	std::list<PhoneNum>& getPhoneNumList() const {
-		return phoneNumList_;
+
+	//是返回list还是返回list引用？  经测试,容器还是直接返回,拷贝一下就可以了,返回容器的引用容易出问题。
+	//不过返回常左值引用就没问题
+	const std::list<PhoneNum>& getPhoneNumList() const {
+		const std::list<PhoneNum>& leftReference = phoneNumList_;
+		return leftReference;
 	}
-	
+	void addPhoneNum(const contactproto::Person_Groups& group,  const std::string& number) {
+		PhoneNum num;
+		num.setGroup(group);
+		num.setNumber(number);
+		phoneNumList_.push_back(num);
+	}
 	void addPhoneNum(const PhoneNum& num) {
 		phoneNumList_.push_back(num);
 	}
+
+	//因为没有办法修改 ostream 类和 istream 类,所以只能将<<和>>重载为全局函数的形式,由于这两个函数需要访问  类的私有成员,因此在  类定义中将它们声明为友元
+	friend std::ostream& operator<<(std::ostream& os, const PersonStruct& person);
 	
+	std::list<PhoneNum> phoneNumList_;
 	
 private:
 	std::string name_;
 	int id_;
-	std::list<PhoneNum> phoneNumList_;
+	
 	int priority_;
 	std::string email_;
 	
 };
+
+
 
 
 #endif

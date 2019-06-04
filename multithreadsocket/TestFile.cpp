@@ -5,7 +5,7 @@
 
 
 TestFile::TestFile(EventLoop * loop, const std::string& ip, const int port, const std::string& name) 
-	: client_(std::make_shared<TcpClient>(loop, ip, port, name)), file_(), isSendFileComplete(false) {
+	: client_(std::make_shared<TcpClient>(loop, ip, port, name)), file_(name), isSendFileComplete(false) {
 	client_->setConnectionCallback(std::bind(&TestFile::onConnection, this, std::placeholders::_1));
 	client_->setMessageCallback(std::bind(&TestFile::onMessage, this, std::placeholders::_1, std::placeholders::_2));
 	client_->setSendCompleteCallback(std::bind(&TestFile::onSendComplete, this, std::placeholders::_1));
@@ -62,9 +62,10 @@ int main(int argc, char** argv) {
 	EventLoop* loop = new EventLoop();
 	std::string ip("127.0.0.1");
 	int port = 8032;
-	TestFile client(loop, ip, port, "hesheng");
-	client.start();
 	std::string name("./test/testfile.txt");
+	TestFile client(loop, ip, port, name);
+	client.start();
+	
 
 	if (client.client_->isConnect()) {
 		client.startSendFile(client.client_->getTcpConnectPtr(), name);

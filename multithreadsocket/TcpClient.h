@@ -1,6 +1,6 @@
 
-#ifndef _TCP_SERVER_H_
-#define _TCP_SERVER_H_
+#ifndef _TCP_CLIENT_H_
+#define _TCP_CLIENT_H_
 
 #include "Socket.h"
 #include "Address.h"
@@ -21,7 +21,7 @@
 class TcpClient : public std::enable_shared_from_this<TcpClient> {
 public:
 	typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
-	typedef std::function<void (const TcpConnectionPtr&, std::string& message)> MessageCallback;
+	typedef std::function<void (const TcpConnectionPtr&, std::string&)> MessageCallback;
 	typedef std::function<void (const TcpConnectionPtr&)> Callback;
 	TcpClient(EventLoop* loop, const std::string& ip, const int& port, const std::string& name = "client");
 	~TcpClient();

@@ -19,6 +19,8 @@ int TcpConnection::recvn(int fd, std::string & bufferin) {
 	int nbyte = 0;
 	char buf[BUFSIZE];
 	int readsum = 0;
+	//要不要加清除buffer,因为io事件触发的readHandler和onMessage()处理函数是在同一线程执行的,不涉及线程同步吧,所以在onMessage处理完之前,都不会执行到readHandler试图输入新的数据
+	bufferin.clear();
 	for (;;) {
 		nbyte = read(fd, buf, BUFSIZE);
 		if (nbyte > 0) {
@@ -189,7 +191,7 @@ void TcpConnection::shutDownInLoop() {
 void TcpConnection::handleRead() {
 	//接收数据写入缓冲区
 	int ret = TcpConnection::recvn(fd_, bufferIn_);
-	//业务回调,可以利用工作线程池处理，投递任务
+	//
 	if (ret > 0) {
 		messageCallback_(shared_from_this(), bufferIn_);
 	} else if (ret == 0) {
