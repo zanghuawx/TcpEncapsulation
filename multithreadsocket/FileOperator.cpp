@@ -40,7 +40,7 @@ bool FileOperator::open(const std :: string & option) {
 		FILE* file = fopen(filename_.c_str(), option_.c_str());
 		FilePtr sp(file, fclose);
 		pFile_ = sp;
-		std::cout << pFile_.use_count() << std::endl;
+		//std::cout << pFile_.use_count() << std::endl;
 	}
 	
 	

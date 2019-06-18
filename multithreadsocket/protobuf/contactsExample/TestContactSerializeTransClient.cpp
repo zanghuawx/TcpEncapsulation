@@ -27,8 +27,9 @@ int main() {
 	p.addPhoneNum(contactproto::Person_Groups_FAMILY, "333333333");
 	p.addPhoneNum(contactproto::Person_Groups_COLLEGE, "888888888");
 
-	client.addPeople(per);
-	client.addPeople(p);
+	Contacts contact;
+	contact.addPeople(per);
+	contact.addPeople(p);
 
 	const std::shared_ptr<TcpClient>& cc = boost::any_cast<const std::shared_ptr<TcpClient>&>(client.getHost());
 	std::cout << "usleep(800000)" << std::endl;
@@ -36,7 +37,7 @@ int main() {
 	if (cc->isConnect()) {
 		//client.sendContactsByTcp(cc->getTcpConnectPtr());
 		std::string str;
-		google::protobuf::Message* mess = &client.getContactBook();
+		google::protobuf::Message* mess = &contact.getContactBook();
 		client.sendContactsByTcp(cc->getTcpConnectPtr(), *mess);
 	}
 	

@@ -33,18 +33,15 @@ len：占4个字节，它表示除len占据的4个字节外整个消息的长度
 message Type nameLen：占4个字节，表示消息类型名的长度 
 message Type name：占nameLen个字节，表示消息类型名 
 protobuf data：占 len-nameLen-8个字节，表示对象序列化后的字节序 
---------------------- 
-作者：sunny_ss12 
-来源：CSDN 
-原文：https://blog.csdn.net/sunny_ss12/article/details/46836435 
-版权声明：本文为博主原创文章，转载请附上博文链接！*/
+*/
 
 
 //不能直接引用基类的私有成员, 只能通过基类的公有函数间接的操作基类的私有成员
-class ContactSerializeTransfer : public Contacts {
+class ContactSerializeTransfer {
 public:
 	typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
 	typedef std::shared_ptr<google::protobuf::Message> MessagePtr;
+	typedef std::function<void(const MessagePtr&)> Callback;
 
 	ContactSerializeTransfer(EventLoop * loop, const std::string& ip, const int& port, const std::string& name = "client");
 	ContactSerializeTransfer(EventLoop * loop,             const int& port, const int& threadNum, const std::string& name = "server");
@@ -56,7 +53,7 @@ public:
 	int sendContactsByTcp(const TcpConnectionPtr& conn, const google::protobuf::Message& message);
 	int fillEmptyString(std::string& str, const google::protobuf::Message& message);
 
-	void receiveContactsFromTcp(const TcpConnectionPtr& conn, const std::string& message);
+
 
 	//用于测试
 	virtual void sendMessage(const TcpConnectionPtr& conn, const std::string& message);
@@ -81,15 +78,21 @@ public:
 	//获取
 	MessagePtr parseDataPack(const TcpConnectionPtr& conn, std::string& message);
 	google::protobuf::Message* createProtobufMessage(const std::string& typeName);
+
+	//各种类型的protobuf报文解析回调函数
+	void parseTypeContacts(const MessagePtr& message);
 	
 	friend std::ostream& operator<<(std::ostream& os, const ContactSerializeTransfer& contact);
 
 	static const int PackLeng;
 	static const int MsgTypeNameLen;
+	static const std::string TypeContacts;
 
 private:
 	boost::any host_;
 	HOSTTYPE type_;
+
+	std::map<std::string, Callback> parseHandlerMap_;
 
 
 

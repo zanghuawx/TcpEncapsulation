@@ -30,10 +30,10 @@ void Channel::handleEvent() {
 		std::cout << "Event EPOLLRDHUP" << std::endl;
 		closehandler_();
 	} else if (events_ & (EPOLLIN | EPOLLPRI)) {	//读事件，对端有数据或者正常关闭
-		std::cout << "Event EPOLLIN" << std::endl;
+		//std::cout << "Event EPOLLIN" << std::endl;
 		readhandler_();
 	} else if (events_ & EPOLLOUT) {
-		std::cout << "Event EPOLLOUT" << std::endl;
+		//std::cout << "Event EPOLLOUT" << std::endl;
 		writehandler_();	//写事件
 	} else {
 		std::cout << "Event error" << std::endl;

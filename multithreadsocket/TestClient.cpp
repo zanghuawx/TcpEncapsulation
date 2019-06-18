@@ -1,4 +1,5 @@
 #include "TestClient.h"
+#include "Timer.h"
 #include <time.h>
 #include <unistd.h>
 
@@ -46,7 +47,19 @@ void TestClient::onSendComplete(const TcpConnectionPtr& conn) {
 
 
 
+void timerTestA() {
+	std::cout << "test timer A" << std::endl;
+}
+void timerTestB() {
+	std::cout << "test timer B" << std::endl;
+}
+void timerTestC() {
+	std::cout << "test timer C" << std::endl;
+}
 
+void timerTestD() {
+	std::cout << "/***********************************test timer D****************************************/" << std::endl;
+}
 
 
 int main(int argc, char** argv) {
@@ -56,12 +69,31 @@ int main(int argc, char** argv) {
 	TestClient client(loop, ip, port, "hesheng");
 	client.start();
 	std::string arg("wo shi shui");
+
+	std::shared_ptr<Timer> tim(new Timer(loop, 500));
+	tim->addOrUpdateTimerCallback("A", std::bind(&timerTestA));
+	tim->addOrUpdateTimerCallback("B", std::bind(&timerTestB));
+	tim->addOrUpdateTimerCallback("C", std::bind(&timerTestC));
+
+	std::shared_ptr<Timer> singleTimer(new Timer(loop, 1000, SINGLE));
+	singleTimer->addOrUpdateTimerCallback("D", std::bind(&timerTestD));
+	singleTimer->start();
+	
 	while (true) {
 		if (client.client_->isConnect()) {
 			client.sendMessage(client.client_->getTcpConnectPtr(), arg);
 		}
-		
-		usleep(50000);
+		tim->start();
+		usleep(5000000);
+		tim->removeTimerCallback("A");
+		usleep(5000000);
+		tim->stop();
+		usleep(5000000);
+		tim->start();
+		usleep(5000000);
+		tim->removeAllTimerCallback();
+		usleep(5000000);
+
 	}
 }
 

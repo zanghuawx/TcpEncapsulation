@@ -25,7 +25,6 @@ void EventLoopThreadPool::start() {
 		//std::cout << "EventLoopThreadPool line 25: start(), threadnum_: " << threadnum_ << std::endl;
 		for (auto i : threadlist_) {
 			i->startThread();	//i直接取出list中的内容,而不是类似begin()的指针
-			//std::cout << "eventloopthread *p" << i << std::endl;
 		}
 	}
 }

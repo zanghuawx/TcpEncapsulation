@@ -8,7 +8,7 @@
 
 
 ContactSerializeTransfer::ContactSerializeTransfer(EventLoop * loop, const std :: string & ip, const int & port, const std :: string & name)
-			: host_(), type_(CLIENT) {
+			: host_(), type_(CLIENT), parseHandlerMap_() {
 	//TcpClient* cc = new TcpClient(loop, ip, port, name);
 	std::shared_ptr<TcpClient> clientPtr = std::make_shared<TcpClient>(loop, ip, port, name);
 	//Any.h 有bug，传入的值是智能指针，退出setHost函数作用域就把shared_ptr销毁，转义为any.使其use_count 减为1。
@@ -18,23 +18,22 @@ ContactSerializeTransfer::ContactSerializeTransfer(EventLoop * loop, const std :
 	//为什么这个智能指针引用的指针只被使用一次？应该是要有两次的呀？？
 	std::cout << "client shared_ptr use_count: " << clientPtr.use_count() << std::endl;
 	//TcpClient client(loop, ip, port, name);
-	//setHost(client);	//报错，需要给TcpClient加一个拷贝构造函数试试
+	//setHost(client);
 	clientPtr->setConnectionCallback(std::bind(&ContactSerializeTransfer::onConnection, this, std::placeholders::_1));
 	clientPtr->setMessageCallback(std::bind(&ContactSerializeTransfer::onMessage, this, std::placeholders::_1, std::placeholders::_2));
 	clientPtr->setSendCompleteCallback(std::bind(&ContactSerializeTransfer::onSendComplete, this, std::placeholders::_1));
+	init();
 }
 
 ContactSerializeTransfer::ContactSerializeTransfer(EventLoop * loop, const int & port, const int & threadNum, const std :: string & name)
-			: host_(), type_(SERVER) {
-	//TcpServer* ss = new TcpServer(loop, port, threadNum);
+			: host_(), type_(SERVER), parseHandlerMap_() {
 	std::shared_ptr<TcpServer> serverPtr =  std::make_shared<TcpServer>(loop, port, threadNum);
 	setHost(serverPtr);
 
-	//TcpServer server(loop, port, threadNum);
-	//setHost(server);
 	serverPtr->setConnectionCallback(std::bind(&ContactSerializeTransfer::onConnection, this, std::placeholders::_1));
 	serverPtr->setMessageCallback(std::bind(&ContactSerializeTransfer::onMessage, this, std::placeholders::_1, std::placeholders::_2));
 	serverPtr->setSendCompleteCallback(std::bind(&ContactSerializeTransfer::onSendComplete, this, std::placeholders::_1));
+	init();
 }
 
 ContactSerializeTransfer::~ContactSerializeTransfer() {
@@ -42,16 +41,13 @@ ContactSerializeTransfer::~ContactSerializeTransfer() {
 }
 
 void ContactSerializeTransfer::init() {
-	if (type_ == SERVER) {
-		
-	} else if (type_ == CLIENT) {
-		
-	}
+	parseHandlerMap_[TypeContacts] = std::bind(&ContactSerializeTransfer::parseTypeContacts, this, std::placeholders::_1);
+	/*其余的类型的protobuf类...............*/
 }
 
 int ContactSerializeTransfer::sendContactsByTcp(const TcpConnectionPtr& conn, const google::protobuf::Message& message) {
 	std::string sendStr;
-	//serializeToCodedOstream(sendStr);
+
 	fillEmptyString(sendStr, message);
 
 	conn->sendString(sendStr);
@@ -86,11 +82,7 @@ int ContactSerializeTransfer::fillEmptyString(std::string& str, const google::pr
 
 }
 
-void ContactSerializeTransfer::receiveContactsFromTcp(const TcpConnectionPtr& conn, const std::string& message) {
-	parseFromCodedStream(message);
-	readAllPeople();
-	
-}
+
 
 void ContactSerializeTransfer::sendMessage(const TcpConnectionPtr& conn, const std::string& message) {
 	conn->sendString(message);
@@ -98,13 +90,11 @@ void ContactSerializeTransfer::sendMessage(const TcpConnectionPtr& conn, const s
 
 void ContactSerializeTransfer::start() {
 	if (type_ == SERVER) {
-		//returnHost<TcpServer>().start();
-		//const TcpServer& ss = any_cast<const TcpServer&>(getHost());
+
 		const std::shared_ptr<TcpServer>& ss = boost::any_cast<const std::shared_ptr<TcpServer>&>(getHost());
 		ss->start();
 	} else {
-		//returnHost<TcpClient>().start();
-		//any_cast<const TcpClient&>(getHost());
+
 		const std::shared_ptr<TcpClient>& cc = boost::any_cast<const std::shared_ptr<TcpClient>&>(getHost());
 		cc->start();
 	}
@@ -121,13 +111,24 @@ void ContactSerializeTransfer::onConnection(const TcpConnectionPtr& conn) {
 }
 
 void ContactSerializeTransfer::onMessage(const TcpConnectionPtr& conn, std::string& message) {
-	//std::cout << message << std::endl;
-	//receiveContactsFromTcp(conn, message);
+
 	ContactSerializeTransfer::MessagePtr mess(parseDataPack(conn, message));
+	
+	const std::string& typeName = mess->GetTypeName();
+	//parseHandlerMap_[TypeContacts] = std::bind(&ContactSerializeTransfer::parseTypeContacts, this, std::placeholders::_1);
+	std::cout << "parse typeName: " << typeName << std::endl;
+	
+	parseHandlerMap_[typeName](mess);
+	
+	
+	
+
+	/*
 	contactproto::ContactBook* book = (contactproto::ContactBook*)mess.get();
 	setContactBook(*book);
 	readAllPeople();
 	std::cout << *this << std::endl;
+	*/
 }
 
 void ContactSerializeTransfer::onSendComplete(const TcpConnectionPtr& conn) {
@@ -195,16 +196,24 @@ google::protobuf::Message* ContactSerializeTransfer::createProtobufMessage(const
 	return message;
 }
 
+void ContactSerializeTransfer::parseTypeContacts(const MessagePtr& message) {
+
+	contactproto::ContactBook* book = (contactproto::ContactBook*)message.get();
+	std::shared_ptr<Contacts> contact(new Contacts());
+	contact->setContactBook(*book);
+	contact->readAllPeople();
+	std::cout << *(contact.get()) << std::endl;
+}
+
 std::ostream& operator<<(std::ostream& os, const ContactSerializeTransfer& contact) {
 	
-	for (std::map<std::string, PersonStruct>::const_iterator it = contact.getPersonMap().cbegin(); it != contact.getPersonMap().cend(); ++it) {
-		os << it->second << std::endl;
-	}
+	
 	return os;
 }
 
 const int ContactSerializeTransfer::PackLeng = 4;
 const int ContactSerializeTransfer::MsgTypeNameLen = 4;
+const std::string ContactSerializeTransfer::TypeContacts = "contactproto.ContactBook";
 
 
 

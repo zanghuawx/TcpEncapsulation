@@ -10,6 +10,7 @@ std::ostream& operator<< (std::ostream& os, const Contacts& contacts) {
 	for (std::map<std::string, PersonStruct>::const_iterator it = contacts.getPersonMap().cbegin(); it != contacts.getPersonMap().cend(); ++it) {
 		os << it->second << std::endl;
 	}
+	return os;
 }
 
 Contacts::Contacts() : contactBook_(), filename_(), personMap_() {

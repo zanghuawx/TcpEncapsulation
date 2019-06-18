@@ -43,7 +43,7 @@ EventLoop::~EventLoop() {
 // buf:待写入数据缓存区
 // nbytes:要写入的字节数
 void EventLoop::wakeUp() {
-	std::cout << "EventLoop.cpp line 46 wakeUp()" << std::endl;
+	//std::cout << "EventLoop.cpp line 46 wakeUp()" << std::endl;
 	uint64_t one = 1;
 	//象这个eventfd对象写入内容,随便写入什么都会触发epoll(EPOLLIN | EPOLLPRI)事件
 	//然后自动回调 readhandler_, 也就是绑定的EventLoop::handleRead()
@@ -59,7 +59,7 @@ void EventLoop::wakeUp() {
 // buf:读取数据缓存区
 // nbytes:要读取的字节数
 void EventLoop::handleRead() {
-	std::cout << "EventLoop.cpp line 62 handleRead()" << std::endl;
+	//std::cout << "EventLoop.cpp line 62 handleRead()" << std::endl;
 	uint64_t one = 1;
 	ssize_t ret = read(wakeupfd_, &one, sizeof(one));
 	if (ret == -1) {
@@ -84,11 +84,9 @@ void EventLoop::loop() {
 		//std::cout << "EventLoop::loop()" << std::endl;
 		//将所有就绪的事件从内核事件表中复制到vector<struct epoll_event>中,转换为封装的channel对象后,插入到活跃事件列表中
 		poller_.pollWait(activeChannelList_);
-		std::cout << "EventLoop::loop() : poller_.pollWait(activeChannelList_) end" << std::endl;
+		//std::cout << "EventLoop::loop() : poller_.pollWait(activeChannelList_) end" << std::endl;
 		for (Channel* pchannel : activeChannelList_) {
-			std::cout << "iterator pchannel start" << std::endl;
 			pchannel->handleEvent();
-			std::cout << "iterator pchannel end" << std::endl;
 		}
 		activeChannelList_.clear();
 		//std::cout << "will executeTask()..." << std::endl;
@@ -111,7 +109,6 @@ void EventLoop::executeTask() {
 	//遍历交换后的列表,执行
 	//清除列表
 	std::vector<Functor> functionList;
-	std::cout << "EventLoop.cpp line 103: executeTask()" << std::endl;
 	if (true) {
 		std::lock_guard<std::mutex> lock(mutex_);
 		functionList.swap(functorList_);	//交换元素
