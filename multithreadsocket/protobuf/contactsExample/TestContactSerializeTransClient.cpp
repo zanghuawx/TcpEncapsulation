@@ -31,6 +31,12 @@ int main() {
 	contact.addPeople(per);
 	contact.addPeople(p);
 
+	Company company;
+	company.setNameAndAmount("bandary", 888888);
+	company.addPeople(per);
+	company.addPeople(p);
+	company.setContactbookPtr();
+
 	const std::shared_ptr<TcpClient>& cc = boost::any_cast<const std::shared_ptr<TcpClient>&>(client.getHost());
 	std::cout << "usleep(800000)" << std::endl;
 	usleep(800000);
@@ -38,7 +44,11 @@ int main() {
 		//client.sendContactsByTcp(cc->getTcpConnectPtr());
 		std::string str;
 		google::protobuf::Message* mess = &contact.getContactBook();
+		google::protobuf::Message* companyMess = &company.getCompany();
 		client.sendContactsByTcp(cc->getTcpConnectPtr(), *mess);
+		usleep(1000000);
+		std::cout << company << std::endl;
+		client.sendContactsByTcp(cc->getTcpConnectPtr(), *companyMess);
 	}
 	
 

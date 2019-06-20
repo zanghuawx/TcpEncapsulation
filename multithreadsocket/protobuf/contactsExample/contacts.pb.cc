@@ -30,6 +30,9 @@ const ::google::protobuf::EnumDescriptor* Person_Groups_descriptor_ = NULL;
 const ::google::protobuf::Descriptor* ContactBook_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ContactBook_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CompanyInfo_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CompanyInfo_reflection_ = NULL;
 
 }  // namespace
 
@@ -91,6 +94,23 @@ void protobuf_AssignDesc_contacts_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ContactBook));
+  CompanyInfo_descriptor_ = file->message_type(2);
+  static const int CompanyInfo_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CompanyInfo, name_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CompanyInfo, amount_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CompanyInfo, contactbook_),
+  };
+  CompanyInfo_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      CompanyInfo_descriptor_,
+      CompanyInfo::default_instance_,
+      CompanyInfo_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CompanyInfo, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CompanyInfo, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(CompanyInfo));
 }
 
 namespace {
@@ -109,6 +129,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     Person_PhoneNumber_descriptor_, &Person_PhoneNumber::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     ContactBook_descriptor_, &ContactBook::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    CompanyInfo_descriptor_, &CompanyInfo::default_instance());
 }
 
 }  // namespace
@@ -121,6 +143,9 @@ void protobuf_ShutdownFile_contacts_2eproto() {
   delete Person_PhoneNumber_reflection_;
   delete ContactBook::default_instance_;
   delete ContactBook_reflection_;
+  delete CompanyInfo::default_instance_;
+  delete CompanyInfo_reflection_;
+  delete CompanyInfo::_default_name_;
 }
 
 void protobuf_AddDesc_contacts_2eproto() {
@@ -139,7 +164,9 @@ void protobuf_AddDesc_contacts_2eproto() {
     "roups\022\n\n\006FAMILY\020\000\022\n\n\006FRIEND\020\001\022\r\n\tCLASSMA"
     "TE\020\002\022\014\n\010WORKMATE\020\003\022\013\n\007COLLEGE\020\004\022\014\n\010STRAN"
     "GER\020\005\"3\n\013ContactBook\022$\n\006people\030\001 \003(\0132\024.c"
-    "ontactproto.Person", 378);
+    "ontactproto.Person\"d\n\013CompanyInfo\022\025\n\004nam"
+    "e\030\001 \001(\t:\007bandary\022\016\n\006amount\030\002 \001(\005\022.\n\013cont"
+    "actbook\030\003 \001(\0132\031.contactproto.ContactBook", 480);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "contacts.proto", &protobuf_RegisterTypes);
   Person::_default_name_ =
@@ -147,9 +174,13 @@ void protobuf_AddDesc_contacts_2eproto() {
   Person::default_instance_ = new Person();
   Person_PhoneNumber::default_instance_ = new Person_PhoneNumber();
   ContactBook::default_instance_ = new ContactBook();
+  CompanyInfo::_default_name_ =
+      new ::std::string("bandary", 7);
+  CompanyInfo::default_instance_ = new CompanyInfo();
   Person::default_instance_->InitAsDefaultInstance();
   Person_PhoneNumber::default_instance_->InitAsDefaultInstance();
   ContactBook::default_instance_->InitAsDefaultInstance();
+  CompanyInfo::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_contacts_2eproto);
 }
 
@@ -1131,6 +1162,338 @@ void ContactBook::Swap(ContactBook* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = ContactBook_descriptor_;
   metadata.reflection = ContactBook_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+::std::string* CompanyInfo::_default_name_ = NULL;
+#ifndef _MSC_VER
+const int CompanyInfo::kNameFieldNumber;
+const int CompanyInfo::kAmountFieldNumber;
+const int CompanyInfo::kContactbookFieldNumber;
+#endif  // !_MSC_VER
+
+CompanyInfo::CompanyInfo()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:contactproto.CompanyInfo)
+}
+
+void CompanyInfo::InitAsDefaultInstance() {
+  contactbook_ = const_cast< ::contactproto::ContactBook*>(&::contactproto::ContactBook::default_instance());
+}
+
+CompanyInfo::CompanyInfo(const CompanyInfo& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:contactproto.CompanyInfo)
+}
+
+void CompanyInfo::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  name_ = const_cast< ::std::string*>(_default_name_);
+  amount_ = 0;
+  contactbook_ = NULL;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+CompanyInfo::~CompanyInfo() {
+  // @@protoc_insertion_point(destructor:contactproto.CompanyInfo)
+  SharedDtor();
+}
+
+void CompanyInfo::SharedDtor() {
+  if (name_ != _default_name_) {
+    delete name_;
+  }
+  if (this != default_instance_) {
+    delete contactbook_;
+  }
+}
+
+void CompanyInfo::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CompanyInfo::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CompanyInfo_descriptor_;
+}
+
+const CompanyInfo& CompanyInfo::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_contacts_2eproto();
+  return *default_instance_;
+}
+
+CompanyInfo* CompanyInfo::default_instance_ = NULL;
+
+CompanyInfo* CompanyInfo::New() const {
+  return new CompanyInfo;
+}
+
+void CompanyInfo::Clear() {
+  if (_has_bits_[0 / 32] & 7) {
+    if (has_name()) {
+      if (name_ != _default_name_) {
+        name_->assign(*_default_name_);
+      }
+    }
+    amount_ = 0;
+    if (has_contactbook()) {
+      if (contactbook_ != NULL) contactbook_->::contactproto::ContactBook::Clear();
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool CompanyInfo::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:contactproto.CompanyInfo)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string name = 1 [default = "bandary"];
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_name()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->name().data(), this->name().length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "name");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_amount;
+        break;
+      }
+
+      // optional int32 amount = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_amount:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &amount_)));
+          set_has_amount();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(26)) goto parse_contactbook;
+        break;
+      }
+
+      // optional .contactproto.ContactBook contactbook = 3;
+      case 3: {
+        if (tag == 26) {
+         parse_contactbook:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_contactbook()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:contactproto.CompanyInfo)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:contactproto.CompanyInfo)
+  return false;
+#undef DO_
+}
+
+void CompanyInfo::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:contactproto.CompanyInfo)
+  // optional string name = 1 [default = "bandary"];
+  if (has_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->name().data(), this->name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "name");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->name(), output);
+  }
+
+  // optional int32 amount = 2;
+  if (has_amount()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->amount(), output);
+  }
+
+  // optional .contactproto.ContactBook contactbook = 3;
+  if (has_contactbook()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      3, this->contactbook(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:contactproto.CompanyInfo)
+}
+
+::google::protobuf::uint8* CompanyInfo::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:contactproto.CompanyInfo)
+  // optional string name = 1 [default = "bandary"];
+  if (has_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->name().data(), this->name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "name");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->name(), target);
+  }
+
+  // optional int32 amount = 2;
+  if (has_amount()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->amount(), target);
+  }
+
+  // optional .contactproto.ContactBook contactbook = 3;
+  if (has_contactbook()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        3, this->contactbook(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:contactproto.CompanyInfo)
+  return target;
+}
+
+int CompanyInfo::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional string name = 1 [default = "bandary"];
+    if (has_name()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->name());
+    }
+
+    // optional int32 amount = 2;
+    if (has_amount()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->amount());
+    }
+
+    // optional .contactproto.ContactBook contactbook = 3;
+    if (has_contactbook()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->contactbook());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CompanyInfo::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const CompanyInfo* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const CompanyInfo*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void CompanyInfo::MergeFrom(const CompanyInfo& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_name()) {
+      set_name(from.name());
+    }
+    if (from.has_amount()) {
+      set_amount(from.amount());
+    }
+    if (from.has_contactbook()) {
+      mutable_contactbook()->::contactproto::ContactBook::MergeFrom(from.contactbook());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void CompanyInfo::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CompanyInfo::CopyFrom(const CompanyInfo& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CompanyInfo::IsInitialized() const {
+
+  if (has_contactbook()) {
+    if (!this->contactbook().IsInitialized()) return false;
+  }
+  return true;
+}
+
+void CompanyInfo::Swap(CompanyInfo* other) {
+  if (other != this) {
+    std::swap(name_, other->name_);
+    std::swap(amount_, other->amount_);
+    std::swap(contactbook_, other->contactbook_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata CompanyInfo::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CompanyInfo_descriptor_;
+  metadata.reflection = CompanyInfo_reflection_;
   return metadata;
 }
 

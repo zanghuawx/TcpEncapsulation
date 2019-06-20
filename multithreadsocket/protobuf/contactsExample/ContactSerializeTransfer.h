@@ -1,6 +1,7 @@
 #ifndef _CONTACTSERIALIZETRANSFER_H_
 #define _CONTACTSERIALIZETRANSFER_H_
 #include "Contacts.h"
+#include "Company.h"
 #include "../../TcpServer.h"
 #include "../../TcpClient.h"
 #include "../../TcpConnection.h"
@@ -81,12 +82,14 @@ public:
 
 	//各种类型的protobuf报文解析回调函数
 	void parseTypeContacts(const MessagePtr& message);
+	void parseTypeCompany(const MessagePtr& message);
 	
 	friend std::ostream& operator<<(std::ostream& os, const ContactSerializeTransfer& contact);
 
 	static const int PackLeng;
 	static const int MsgTypeNameLen;
 	static const std::string TypeContacts;
+	static const std::string TypeCompany;
 
 private:
 	boost::any host_;

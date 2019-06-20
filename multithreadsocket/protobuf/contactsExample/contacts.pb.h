@@ -37,6 +37,7 @@ void protobuf_ShutdownFile_contacts_2eproto();
 class Person;
 class Person_PhoneNumber;
 class ContactBook;
+class CompanyInfo;
 
 enum Person_Groups {
   Person_Groups_FAMILY = 0,
@@ -399,6 +400,113 @@ class ContactBook : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static ContactBook* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CompanyInfo : public ::google::protobuf::Message {
+ public:
+  CompanyInfo();
+  virtual ~CompanyInfo();
+
+  CompanyInfo(const CompanyInfo& from);
+
+  inline CompanyInfo& operator=(const CompanyInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CompanyInfo& default_instance();
+
+  void Swap(CompanyInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  CompanyInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CompanyInfo& from);
+  void MergeFrom(const CompanyInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string name = 1 [default = "bandary"];
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 1;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // optional int32 amount = 2;
+  inline bool has_amount() const;
+  inline void clear_amount();
+  static const int kAmountFieldNumber = 2;
+  inline ::google::protobuf::int32 amount() const;
+  inline void set_amount(::google::protobuf::int32 value);
+
+  // optional .contactproto.ContactBook contactbook = 3;
+  inline bool has_contactbook() const;
+  inline void clear_contactbook();
+  static const int kContactbookFieldNumber = 3;
+  inline const ::contactproto::ContactBook& contactbook() const;
+  inline ::contactproto::ContactBook* mutable_contactbook();
+  inline ::contactproto::ContactBook* release_contactbook();
+  inline void set_allocated_contactbook(::contactproto::ContactBook* contactbook);
+
+  // @@protoc_insertion_point(class_scope:contactproto.CompanyInfo)
+ private:
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_amount();
+  inline void clear_has_amount();
+  inline void set_has_contactbook();
+  inline void clear_has_contactbook();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  static ::std::string* _default_name_;
+  ::std::string* name_;
+  ::contactproto::ContactBook* contactbook_;
+  ::google::protobuf::int32 amount_;
+  friend void  protobuf_AddDesc_contacts_2eproto();
+  friend void protobuf_AssignDesc_contacts_2eproto();
+  friend void protobuf_ShutdownFile_contacts_2eproto();
+
+  void InitAsDefaultInstance();
+  static CompanyInfo* default_instance_;
 };
 // ===================================================================
 
@@ -774,6 +882,151 @@ inline ::google::protobuf::RepeatedPtrField< ::contactproto::Person >*
 ContactBook::mutable_people() {
   // @@protoc_insertion_point(field_mutable_list:contactproto.ContactBook.people)
   return &people_;
+}
+
+// -------------------------------------------------------------------
+
+// CompanyInfo
+
+// optional string name = 1 [default = "bandary"];
+inline bool CompanyInfo::has_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CompanyInfo::set_has_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CompanyInfo::clear_has_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CompanyInfo::clear_name() {
+  if (name_ != _default_name_) {
+    name_->assign(*_default_name_);
+  }
+  clear_has_name();
+}
+inline const ::std::string& CompanyInfo::name() const {
+  // @@protoc_insertion_point(field_get:contactproto.CompanyInfo.name)
+  return *name_;
+}
+inline void CompanyInfo::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == _default_name_) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set:contactproto.CompanyInfo.name)
+}
+inline void CompanyInfo::set_name(const char* value) {
+  set_has_name();
+  if (name_ == _default_name_) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set_char:contactproto.CompanyInfo.name)
+}
+inline void CompanyInfo::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == _default_name_) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:contactproto.CompanyInfo.name)
+}
+inline ::std::string* CompanyInfo::mutable_name() {
+  set_has_name();
+  if (name_ == _default_name_) {
+    name_ = new ::std::string(*_default_name_);
+  }
+  // @@protoc_insertion_point(field_mutable:contactproto.CompanyInfo.name)
+  return name_;
+}
+inline ::std::string* CompanyInfo::release_name() {
+  clear_has_name();
+  if (name_ == _default_name_) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(_default_name_);
+    return temp;
+  }
+}
+inline void CompanyInfo::set_allocated_name(::std::string* name) {
+  if (name_ != _default_name_) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(_default_name_);
+  }
+  // @@protoc_insertion_point(field_set_allocated:contactproto.CompanyInfo.name)
+}
+
+// optional int32 amount = 2;
+inline bool CompanyInfo::has_amount() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CompanyInfo::set_has_amount() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CompanyInfo::clear_has_amount() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CompanyInfo::clear_amount() {
+  amount_ = 0;
+  clear_has_amount();
+}
+inline ::google::protobuf::int32 CompanyInfo::amount() const {
+  // @@protoc_insertion_point(field_get:contactproto.CompanyInfo.amount)
+  return amount_;
+}
+inline void CompanyInfo::set_amount(::google::protobuf::int32 value) {
+  set_has_amount();
+  amount_ = value;
+  // @@protoc_insertion_point(field_set:contactproto.CompanyInfo.amount)
+}
+
+// optional .contactproto.ContactBook contactbook = 3;
+inline bool CompanyInfo::has_contactbook() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void CompanyInfo::set_has_contactbook() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void CompanyInfo::clear_has_contactbook() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void CompanyInfo::clear_contactbook() {
+  if (contactbook_ != NULL) contactbook_->::contactproto::ContactBook::Clear();
+  clear_has_contactbook();
+}
+inline const ::contactproto::ContactBook& CompanyInfo::contactbook() const {
+  // @@protoc_insertion_point(field_get:contactproto.CompanyInfo.contactbook)
+  return contactbook_ != NULL ? *contactbook_ : *default_instance_->contactbook_;
+}
+inline ::contactproto::ContactBook* CompanyInfo::mutable_contactbook() {
+  set_has_contactbook();
+  if (contactbook_ == NULL) contactbook_ = new ::contactproto::ContactBook;
+  // @@protoc_insertion_point(field_mutable:contactproto.CompanyInfo.contactbook)
+  return contactbook_;
+}
+inline ::contactproto::ContactBook* CompanyInfo::release_contactbook() {
+  clear_has_contactbook();
+  ::contactproto::ContactBook* temp = contactbook_;
+  contactbook_ = NULL;
+  return temp;
+}
+inline void CompanyInfo::set_allocated_contactbook(::contactproto::ContactBook* contactbook) {
+  delete contactbook_;
+  contactbook_ = contactbook;
+  if (contactbook) {
+    set_has_contactbook();
+  } else {
+    clear_has_contactbook();
+  }
+  // @@protoc_insertion_point(field_set_allocated:contactproto.CompanyInfo.contactbook)
 }
 
 

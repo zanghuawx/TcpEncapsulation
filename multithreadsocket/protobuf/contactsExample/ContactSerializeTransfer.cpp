@@ -43,6 +43,7 @@ ContactSerializeTransfer::~ContactSerializeTransfer() {
 void ContactSerializeTransfer::init() {
 	parseHandlerMap_[TypeContacts] = std::bind(&ContactSerializeTransfer::parseTypeContacts, this, std::placeholders::_1);
 	/*其余的类型的protobuf类...............*/
+	parseHandlerMap_[TypeCompany] = std::bind(&ContactSerializeTransfer::parseTypeCompany, this, std::placeholders::_1);
 }
 
 int ContactSerializeTransfer::sendContactsByTcp(const TcpConnectionPtr& conn, const google::protobuf::Message& message) {
@@ -205,6 +206,15 @@ void ContactSerializeTransfer::parseTypeContacts(const MessagePtr& message) {
 	std::cout << *(contact.get()) << std::endl;
 }
 
+void ContactSerializeTransfer::parseTypeCompany(const MessagePtr& message) {
+
+	contactproto::CompanyInfo* info = (contactproto::CompanyInfo*)message.get();
+	std::shared_ptr<Company> company(new Company());
+	company->setCompany(*info);
+	company->readAllPeople();
+	std::cout << *(company.get()) << std::endl;
+}
+
 std::ostream& operator<<(std::ostream& os, const ContactSerializeTransfer& contact) {
 	
 	
@@ -214,6 +224,7 @@ std::ostream& operator<<(std::ostream& os, const ContactSerializeTransfer& conta
 const int ContactSerializeTransfer::PackLeng = 4;
 const int ContactSerializeTransfer::MsgTypeNameLen = 4;
 const std::string ContactSerializeTransfer::TypeContacts = "contactproto.ContactBook";
+const std::string ContactSerializeTransfer::TypeCompany = "contactproto.CompanyInfo";
 
 
 

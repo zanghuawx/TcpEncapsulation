@@ -25,3 +25,9 @@ message Person {
 message ContactBook {
 	repeated Person people = 1;
 }
+
+message CompanyInfo {
+	optional string name = 1 [default = "bandary"];
+	optional int32 amount = 2;
+	repeated Person people = 3;
+}

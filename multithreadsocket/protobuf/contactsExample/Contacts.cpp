@@ -2,12 +2,13 @@
 #include "PersonStruct.h"
 #include <iostream>
 #include <fstream>
+#include <map>
 
 using namespace std;
 
-std::ostream& operator<< (std::ostream& os, const Contacts& contacts) {
+std::ostream& operator<< (std::ostream& os, Contacts& contacts) {
 	
-	for (std::map<std::string, PersonStruct>::const_iterator it = contacts.getPersonMap().cbegin(); it != contacts.getPersonMap().cend(); ++it) {
+	for (std::map<std::string, PersonStruct>::iterator it = contacts.getPersonMap().begin(); it != contacts.getPersonMap().end(); ++it) {
 		os << it->second << std::endl;
 	}
 	return os;

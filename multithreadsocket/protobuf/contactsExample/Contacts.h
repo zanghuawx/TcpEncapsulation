@@ -23,7 +23,7 @@ public:
 	void clearAllPeople() {
 		contactBook_.clear_people();
 	}
-	int readAllPeople();
+	virtual int readAllPeople();
 	void listAllPeople(PersonStructMap& personMap);
 	int serializeToOstream();
 	int serializeToCodedOstream(std::string& outString);
@@ -46,11 +46,11 @@ public:
 		return filename_;
 	}
 	//返回常引用,不需要在外部修改
-	const PersonStructMap& getPersonMap() const {
+	PersonStructMap& getPersonMap() {
 		return personMap_;
 	}
 
-	friend std::ostream& operator<< (std::ostream& os, const Contacts& contacts);
+	friend std::ostream& operator<< (std::ostream& os, Contacts& contacts);
 	
 private:
 	contactproto::ContactBook contactBook_;
