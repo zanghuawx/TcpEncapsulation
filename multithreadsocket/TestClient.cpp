@@ -57,6 +57,11 @@ void timerTestC() {
 	std::cout << "test timer C" << std::endl;
 }
 
+void timerTestE(boost::any& str) {
+	std::string anytest(boost::any_cast<std::string&>(str));
+	std::cout << anytest << std::endl;
+}
+
 void timerTestD() {
 	std::cout << "/***********************************test timer D****************************************/" << std::endl;
 }
@@ -74,6 +79,9 @@ int main(int argc, char** argv) {
 	tim->addOrUpdateTimerCallback("A", std::bind(&timerTestA));
 	tim->addOrUpdateTimerCallback("B", std::bind(&timerTestB));
 	tim->addOrUpdateTimerCallback("C", std::bind(&timerTestC));
+	tim->addOrUpdateTimerCallbackPara("E", std::bind(&timerTestE, std::placeholders::_1));
+	std::string anytest("E: boost::any test .............................");
+	tim->setCallbackPara(anytest);
 
 	std::shared_ptr<Timer> singleTimer(new Timer(loop, 1000, SINGLE));
 	singleTimer->addOrUpdateTimerCallback("D", std::bind(&timerTestD));

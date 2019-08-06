@@ -1,10 +1,11 @@
-#ifndef _CONTACTSERIALIZETRANSFER_H_
-#define _CONTACTSERIALIZETRANSFER_H_
-#include "Contacts.h"
-#include "../../TcpServer.h"
-#include "../../TcpClient.h"
-#include "../../TcpConnection.h"
-#include "../../Any.h"
+#ifndef _PROTOCOLMESSAGECODEC_H_
+#define _PROTOCOLMESSAGECODEC_H_
+
+#include "../TcpServer.h"
+#include "../TcpClient.h"
+#include "../TcpConnection.h"
+#include "../Any.h"
+#include "pet.pb.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -18,10 +19,7 @@
 #include <time.h>
 #include <boost/any.hpp>
 
-typedef enum HostType {
-	SERVER = 0,
-	CLIENT
-}HOSTTYPE;
+
 
 /*len（4个字节）  
 message Type nameLen(4个字节)  
@@ -35,20 +33,23 @@ message Type name：占nameLen个字节，表示消息类型名
 protobuf data：占 len-nameLen-8个字节，表示对象序列化后的字节序 
 */
 
+typedef enum HostType {
+	SERVER = 0,
+	CLIENT
+}HOSTTYPE;
 
 //不能直接引用基类的私有成员, 只能通过基类的公有函数间接的操作基类的私有成员
-class ContactSerializeTransfer {
+class ProtocolMessageCodec {
 public:
 	typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
 	typedef std::shared_ptr<google::protobuf::Message> MessagePtr;
 	typedef std::function<void(const MessagePtr&)> Callback;
 
-	ContactSerializeTransfer(EventLoop * loop, const std::string& ip, const int& port, const std::string& name = "client");
-	ContactSerializeTransfer(EventLoop * loop,             const int& port, const int& threadNum, const std::string& name = "server");
-	ContactSerializeTransfer(const ContactSerializeTransfer& c);
-	virtual ~ContactSerializeTransfer();
+	ProtocolMessageCodec(EventLoop * loop, const std::string& ip, const int& port, const std::string& name = "client");
+	ProtocolMessageCodec(EventLoop * loop,             const int& port, const int& threadNum, const std::string& name = "server");
+	virtual ~ProtocolMessageCodec();
 
-	void init();
+	virtual void init();
 	
 	int sendContactsByTcp(const TcpConnectionPtr& conn, const google::protobuf::Message& message);
 	int fillEmptyString(std::string& str, const google::protobuf::Message& message);
@@ -58,8 +59,8 @@ public:
 	//用于测试
 	virtual void sendMessage(const TcpConnectionPtr& conn, const std::string& message);
 
-	virtual void start();
-	virtual void onConnection(const TcpConnectionPtr& conn);
+	void start();
+	void onConnection(const TcpConnectionPtr& conn);
 	virtual void onMessage(const TcpConnectionPtr& conn, std::string& message);
 	virtual void onSendComplete(const TcpConnectionPtr& conn);
 
@@ -79,22 +80,19 @@ public:
 	MessagePtr parseDataPack(const TcpConnectionPtr& conn, std::string& message);
 	google::protobuf::Message* createProtobufMessage(const std::string& typeName);
 
-	//各种类型的protobuf报文解析回调函数
-	void parseTypeContacts(const MessagePtr& message);
-	void parseTypePerson(const MessagePtr& message);
+	void parseType(const MessagePtr& message);
 	
-	friend std::ostream& operator<<(std::ostream& os, const ContactSerializeTransfer& contact);
+	
+	friend std::ostream& operator<<(std::ostream& os, const ProtocolMessageCodec& contact);
 
 	static const int PackLeng;
 	static const int MsgTypeNameLen;
-	static const std::string TypeContacts;
-	static const std::string TypePerson;
+
+	std::map<std::string, Callback> parseHandlerMap_;
 
 private:
 	boost::any host_;
 	HOSTTYPE type_;
-
-	std::map<std::string, Callback> parseHandlerMap_;
 
 
 

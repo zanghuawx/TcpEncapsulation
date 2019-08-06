@@ -27,7 +27,7 @@ static int writeTimerfd(int& fd, std::string& bufferin) {
 
 Timer::Timer(EventLoop* loop, const int& ms, const TimerMode& mode) : timerfd_(), mutex_(),
 			spChannel_(new Channel()), ms_(ms), mode_(mode), loop_(loop), count_(0), timerCallbackMap_(),
-			bufferIn_(), bufferOut_(), running_(false) {
+			timerCallbackParaMap_(), bufferIn_(), bufferOut_(), running_(false), timerCallbackPara_() {
 
 	initTimerfd();
 }
@@ -112,6 +112,10 @@ void Timer::handleRead() {
 			it != timerCallbackMap_.end(); ++it) {
 			it->second();
 		}
+
+		for (auto it_ : timerCallbackParaMap_) {
+			it_.second(timerCallbackPara_);
+		}
 	}
 	if (mode_ == SINGLE) {
 		if (count_) {
@@ -146,6 +150,14 @@ void Timer::addOrUpdateTimerCallback(const std::string& key, const Callback& cb)
 		timerCallbackMap_[key] = cb;
 	}
 }
+
+void Timer::addOrUpdateTimerCallbackPara(const std::string& key, const CallbackPara& cb) {
+	std::lock_guard<std::mutex> lock(mutex_);
+	if (cb != NULL && key.size()) {
+		timerCallbackParaMap_[key] = cb;
+	}
+}
+
 
 void Timer::removeTimerCallback(const std::string& key) {
 	std::lock_guard<std::mutex> lock(mutex_);

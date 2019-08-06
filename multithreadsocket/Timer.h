@@ -11,6 +11,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <map>
+#include <boost/any.hpp>
 
 #include "Channel.h"
 #include "EventLoop.h"
@@ -51,6 +52,8 @@ enum TimerMode {
 class Timer : public std::enable_shared_from_this<Timer> {
 public:
 	typedef std::function<void()> Callback;
+	typedef std::function<void(boost::any&)> CallbackPara;
+	typedef std::function<void(std::string&)> CallbackStringPara;
 	Timer(EventLoop* loop, const int& ms, const TimerMode& mode = CYCLE);
 	~Timer();
 	void initTimerfd();
@@ -81,6 +84,13 @@ public:
 	}
 
 	void addOrUpdateTimerCallback(const std::string& key, const Callback& cb);
+	void addOrUpdateTimerCallbackPara(const std::string& key, const CallbackPara& cb);
+	void setCallbackPara(const boost::any& para) {
+		timerCallbackPara_ = para;
+	}
+	const boost::any& getCallbackPara() {
+		return timerCallbackPara_;
+	}
 	void removeTimerCallback(const std::string& key);
 	void removeAllTimerCallback();
 
@@ -104,9 +114,13 @@ private:
 	EventLoop* loop_;
 	long count_;
 	std::map<std::string, Callback> timerCallbackMap_;
+	std::map<std::string, CallbackPara> timerCallbackParaMap_;
+	std::map<std::string, CallbackStringPara> timerCallbackStringParaMap_;
 	//¶ÁÐ´»º³å
 	std::string bufferIn_;
 	std::string bufferOut_;
+
+	boost::any timerCallbackPara_;
 
 	bool running_;
 

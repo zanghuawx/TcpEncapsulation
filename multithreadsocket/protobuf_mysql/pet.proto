@@ -1,0 +1,11 @@
+package petproto;
+
+
+message PetProto {
+	optional string name = 1;
+	optional string owner = 2 [default = "SunYanxia"];
+	optional string species = 3 [default = "koala"];
+	optional string sex = 4 [default = "m"];
+	optional string birth = 5;
+	optional string death = 6;
+}

@@ -1,4 +1,4 @@
-#include "ContactSerializeTransfer.h"
+#include "ProtocolMessageCodec.h"
 #include <boost/any.hpp>
 #include <arpa/inet.h>
 #include <sstream>
@@ -7,7 +7,7 @@
 
 
 
-ContactSerializeTransfer::ContactSerializeTransfer(EventLoop * loop, const std :: string & ip, const int & port, const std :: string & name)
+ProtocolMessageCodec::ProtocolMessageCodec(EventLoop * loop, const std :: string & ip, const int & port, const std :: string & name)
 			: host_(), type_(CLIENT), parseHandlerMap_() {
 	//TcpClient* cc = new TcpClient(loop, ip, port, name);
 	std::shared_ptr<TcpClient> clientPtr = std::make_shared<TcpClient>(loop, ip, port, name);
@@ -19,34 +19,33 @@ ContactSerializeTransfer::ContactSerializeTransfer(EventLoop * loop, const std :
 	std::cout << "client shared_ptr use_count: " << clientPtr.use_count() << std::endl;
 	//TcpClient client(loop, ip, port, name);
 	//setHost(client);
-	clientPtr->setConnectionCallback(std::bind(&ContactSerializeTransfer::onConnection, this, std::placeholders::_1));
-	clientPtr->setMessageCallback(std::bind(&ContactSerializeTransfer::onMessage, this, std::placeholders::_1, std::placeholders::_2));
-	clientPtr->setSendCompleteCallback(std::bind(&ContactSerializeTransfer::onSendComplete, this, std::placeholders::_1));
+	clientPtr->setConnectionCallback(std::bind(&ProtocolMessageCodec::onConnection, this, std::placeholders::_1));
+	clientPtr->setMessageCallback(std::bind(&ProtocolMessageCodec::onMessage, this, std::placeholders::_1, std::placeholders::_2));
+	clientPtr->setSendCompleteCallback(std::bind(&ProtocolMessageCodec::onSendComplete, this, std::placeholders::_1));
 	init();
 }
 
-ContactSerializeTransfer::ContactSerializeTransfer(EventLoop * loop, const int & port, const int & threadNum, const std :: string & name)
+ProtocolMessageCodec::ProtocolMessageCodec(EventLoop * loop, const int & port, const int & threadNum, const std :: string & name)
 			: host_(), type_(SERVER), parseHandlerMap_() {
 	std::shared_ptr<TcpServer> serverPtr =  std::make_shared<TcpServer>(loop, port, threadNum);
 	setHost(serverPtr);
 
-	serverPtr->setConnectionCallback(std::bind(&ContactSerializeTransfer::onConnection, this, std::placeholders::_1));
-	serverPtr->setMessageCallback(std::bind(&ContactSerializeTransfer::onMessage, this, std::placeholders::_1, std::placeholders::_2));
-	serverPtr->setSendCompleteCallback(std::bind(&ContactSerializeTransfer::onSendComplete, this, std::placeholders::_1));
+	serverPtr->setConnectionCallback(std::bind(&ProtocolMessageCodec::onConnection, this, std::placeholders::_1));
+	serverPtr->setMessageCallback(std::bind(&ProtocolMessageCodec::onMessage, this, std::placeholders::_1, std::placeholders::_2));
+	serverPtr->setSendCompleteCallback(std::bind(&ProtocolMessageCodec::onSendComplete, this, std::placeholders::_1));
 	init();
 }
 
-ContactSerializeTransfer::~ContactSerializeTransfer() {
+ProtocolMessageCodec::~ProtocolMessageCodec() {
 
 }
 
-void ContactSerializeTransfer::init() {
-	parseHandlerMap_[TypeContacts] = std::bind(&ContactSerializeTransfer::parseTypeContacts, this, std::placeholders::_1);
+void ProtocolMessageCodec::init() {
+	parseHandlerMap_["default"] = std::bind(&ProtocolMessageCodec::parseType, this, std::placeholders::_1);
 	/*其余的类型的protobuf类...............*/
-	parseHandlerMap_[TypePerson] = std::bind(&ContactSerializeTransfer::parseTypePerson, this, std::placeholders::_1);
 }
 
-int ContactSerializeTransfer::sendContactsByTcp(const TcpConnectionPtr& conn, const google::protobuf::Message& message) {
+int ProtocolMessageCodec::sendContactsByTcp(const TcpConnectionPtr& conn, const google::protobuf::Message& message) {
 	std::string sendStr;
 
 	fillEmptyString(sendStr, message);
@@ -54,7 +53,7 @@ int ContactSerializeTransfer::sendContactsByTcp(const TcpConnectionPtr& conn, co
 	conn->sendString(sendStr);
 }
 
-int ContactSerializeTransfer::fillEmptyString(std::string& str, const google::protobuf::Message& message) {
+int ProtocolMessageCodec::fillEmptyString(std::string& str, const google::protobuf::Message& message) {
 	str.clear();
 	const std::string& typeName = message.GetTypeName();
 	int nameLen = static_cast<int>(typeName.size() + 1);	//特意在name和data之间空一个byte
@@ -85,23 +84,24 @@ int ContactSerializeTransfer::fillEmptyString(std::string& str, const google::pr
 
 
 
-void ContactSerializeTransfer::sendMessage(const TcpConnectionPtr& conn, const std::string& message) {
+void ProtocolMessageCodec::sendMessage(const TcpConnectionPtr& conn, const std::string& message) {
 	conn->sendString(message);
 }
 
-void ContactSerializeTransfer::start() {
+void ProtocolMessageCodec::start() {
 	if (type_ == SERVER) {
 
 		const std::shared_ptr<TcpServer>& ss = boost::any_cast<const std::shared_ptr<TcpServer>&>(getHost());
 		ss->start();
-	} else {
+	}
+	else {
 
 		const std::shared_ptr<TcpClient>& cc = boost::any_cast<const std::shared_ptr<TcpClient>&>(getHost());
 		cc->start();
 	}
 }
 
-void ContactSerializeTransfer::onConnection(const TcpConnectionPtr& conn) {
+void ProtocolMessageCodec::onConnection(const TcpConnectionPtr& conn) {
 	
 	if (type_ == SERVER) {
 		std::cout << "new connection socketfd->" << conn->fd() << std::endl;
@@ -111,15 +111,15 @@ void ContactSerializeTransfer::onConnection(const TcpConnectionPtr& conn) {
 	}
 }
 
-void ContactSerializeTransfer::onMessage(const TcpConnectionPtr& conn, std::string& message) {
+void ProtocolMessageCodec::onMessage(const TcpConnectionPtr& conn, std::string& message) {
 
-	ContactSerializeTransfer::MessagePtr mess(parseDataPack(conn, message));
+	ProtocolMessageCodec::MessagePtr mess(parseDataPack(conn, message));
 	
 	const std::string& typeName = mess->GetTypeName();
-	//parseHandlerMap_[TypeContacts] = std::bind(&ContactSerializeTransfer::parseTypeContacts, this, std::placeholders::_1);
+	//parseHandlerMap_[TypeContacts] = std::bind(&ProtocolMessageCodec::parseTypeContacts, this, std::placeholders::_1);
 	std::cout << "parse typeName: " << typeName << std::endl;
 	
-	parseHandlerMap_[typeName](mess);
+	parseHandlerMap_["default"](mess);
 	
 	
 	
@@ -132,11 +132,11 @@ void ContactSerializeTransfer::onMessage(const TcpConnectionPtr& conn, std::stri
 	*/
 }
 
-void ContactSerializeTransfer::onSendComplete(const TcpConnectionPtr& conn) {
+void ProtocolMessageCodec::onSendComplete(const TcpConnectionPtr& conn) {
 	std::cout << "contactBoock_ send complete" << std::endl;
 }
 
-ContactSerializeTransfer::MessagePtr ContactSerializeTransfer::parseDataPack(const TcpConnectionPtr& conn, std::string& message) {
+ProtocolMessageCodec::MessagePtr ProtocolMessageCodec::parseDataPack(const TcpConnectionPtr& conn, std::string& message) {
 	
 	MessagePtr protobufMessage;
 	std::cout << "receive message size: " << message.size() << std::endl;
@@ -180,7 +180,7 @@ ContactSerializeTransfer::MessagePtr ContactSerializeTransfer::parseDataPack(con
 }
 
 
-google::protobuf::Message* ContactSerializeTransfer::createProtobufMessage(const std::string& typeName) {
+google::protobuf::Message* ProtocolMessageCodec::createProtobufMessage(const std::string& typeName) {
 	google::protobuf::Message* message = NULL;
 	const google::protobuf::Descriptor* descriptor =
 		google::protobuf::DescriptorPool::generated_pool()->FindMessageTypeByName(typeName);
@@ -197,32 +197,19 @@ google::protobuf::Message* ContactSerializeTransfer::createProtobufMessage(const
 	return message;
 }
 
-void ContactSerializeTransfer::parseTypeContacts(const MessagePtr& message) {
-
-	contactproto::ContactBook* book = (contactproto::ContactBook*)message.get();
-	std::shared_ptr<Contacts> contact(new Contacts());
-	contact->setContactBook(*book);
-	contact->readAllPeople();
-	std::cout << *(contact.get()) << std::endl;
+void ProtocolMessageCodec::parseType(const MessagePtr& message) {
+	std::cout << "parse type..." << std::endl;
 }
 
-void ContactSerializeTransfer::parseTypePerson(const MessagePtr& message) {
-
-	contactproto::Person* info = (contactproto::Person*)message.get();
-
-	std::cout << info->name() << info->name() << info->id() << info->priority() << std::endl;
-}
-
-std::ostream& operator<<(std::ostream& os, const ContactSerializeTransfer& contact) {
+std::ostream& operator<<(std::ostream& os, const ProtocolMessageCodec& contact) {
 	
 	
 	return os;
 }
 
-const int ContactSerializeTransfer::PackLeng = 4;
-const int ContactSerializeTransfer::MsgTypeNameLen = 4;
-const std::string ContactSerializeTransfer::TypeContacts = "contactproto.ContactBook";
-const std::string ContactSerializeTransfer::TypePerson = "contactproto.Person";
+const int ProtocolMessageCodec::PackLeng = 4;
+const int ProtocolMessageCodec::MsgTypeNameLen = 4;
+
 
 
 
