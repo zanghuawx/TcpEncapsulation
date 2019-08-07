@@ -30,7 +30,7 @@ int main() {
 	client.start();
 
 	//Timer(EventLoop * loop, const int& ms, const TimerMode & mode = CYCLE);
-	std::shared_ptr<Timer> producePetTimer(new Timer(loop, 1000));
+	std::shared_ptr<Timer> producePetTimer(new Timer(loop, 3000));
 	producePetTimer->addOrUpdateTimerCallback("producePetTimer", std::bind(&newPetRow));
 	producePetTimer->start();
 
