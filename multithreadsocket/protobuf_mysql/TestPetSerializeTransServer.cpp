@@ -8,8 +8,8 @@
 #include <unistd.h>
 
 void printAll(boost::any& para) {
-	PetMysqlOperator pet(boost::any_cast<PetMysqlOperator&>(para));
-	std::cout << pet << std::endl;
+	std::string str(boost::any_cast<std::string&>(para));
+	std::cout << str << std::endl;
 }
 
 int main() {
@@ -17,12 +17,13 @@ int main() {
 	int port = 8032;
 	PetProtocMessCodec server(loop, port, 2);
 	PetMysqlOperator mysqlOperator("root", "123456", "exercisesql1", "pet");
-	//µ±bindµÄ¶ÔÏóÊÇÖØÔØº¯ÊýÊ±£¬ÐèÒªÏÔÊ¾µÄËµÃ÷£¬ÈçÏÂ
-	// Ç¿×ªÎª´Ëº¯ÊýÖ¸Õë (int(PetMysqlOperator::*)(PetMysqlOperator::RowVector & rowContent))
+	//å½“bindçš„å¯¹è±¡æ˜¯é‡è½½å‡½æ•°æ—¶ï¼Œéœ€è¦æ˜¾ç¤ºçš„è¯´æ˜Žï¼Œå¦‚ä¸‹
+	// å¼ºè½¬ä¸ºæ­¤å‡½æ•°æŒ‡é’ˆ (int(PetMysqlOperator::*)(PetMysqlOperator::RowVector & rowContent))
 	server.setMessageCallback(std::bind((int(PetMysqlOperator::*)(PetMysqlOperator::RowVector & rowContent)) &PetMysqlOperator::insertRow, &mysqlOperator, std::placeholders::_1));
-	Timer timer(loop, 10000);	//Õâ¸ö¶¨Ê±Æ÷10s´òÓ¡Ò»´Î,Êä³öµ±Ç°Êý¾Ý¿â pet±íÖÐËùÓÐÊý¾Ý
+	Timer timer(loop, 10000);	//è¿™ä¸ªå®šæ—¶å™¨10sæ‰“å°ä¸€æ¬¡,è¾“å‡ºå½“å‰æ•°æ®åº“ petè¡¨ä¸­æ‰€æœ‰æ•°æ®
+	std::string str("please print sql");
+	timer.setCallbackPara(str);
 	timer.addOrUpdateTimerCallbackPara("printAllContent", std::bind(&printAll, std::placeholders::_1));
-	timer.setCallbackPara(mysqlOperator);
 	timer.start();
 
 	server.start();
