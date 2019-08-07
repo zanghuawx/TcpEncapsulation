@@ -2,6 +2,7 @@
 
 
 RandomProductPet::RandomProductPet() {
+	srand((unsigned int)time(NULL));	//鍒濆鍖栭殢鏈烘暟绉嶅瓙
 	name();
 	owner();
 	species();
@@ -40,7 +41,7 @@ void RandomProductPet::death() {
 
 char RandomProductPet::asciiWord() {
 	char tmp = 0;
-	srand((unsigned int)time(NULL));	//初始化随机数种子
+
 	tmp = rand() % 122;
 	if (tmp <= 25) {
 		tmp += 97;
@@ -63,7 +64,7 @@ void RandomProductPet::specifiedRandStringLength(std::string& str, int length) {
 	}
 }
 void RandomProductPet::productDate(unsigned int& year, unsigned int& month, unsigned int& day) {
-	srand((unsigned int)time(NULL));	//初始化随机数种子
+
 	year = (unsigned)rand() % 99;
 	month = (unsigned)rand() % 12 + 1;
 	day = (unsigned)rand() % 30 + 1;
