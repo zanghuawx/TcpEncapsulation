@@ -3,11 +3,11 @@
 
 PetProtocMessCodec::PetProtocMessCodec(EventLoop* loop, const std::string& ip, const int& port, const std::string& name) : 
 					ProtocolMessageCodec(loop, ip, port, name), petRowContent_()/*, name_(), owner_(), species_(), sex_(), birth_(), death_()*/ {
-
+	init();
 }
 PetProtocMessCodec::PetProtocMessCodec(EventLoop* loop, const int& port, const int& threadNum, const std::string& name) :
 					ProtocolMessageCodec(loop, port, threadNum, name), petRowContent_()/*, name_(), owner_(), species_(), sex_(), birth_(), death_()*/ {
-
+	init();
 }
 PetProtocMessCodec::~PetProtocMessCodec() {
 
@@ -27,7 +27,7 @@ void PetProtocMessCodec::onMessage(const TcpConnectionPtr& conn, std::string& me
 
 	parseHandlerMap_[typeName](mess);
 
-	//½ÓÏÂÀ´Ò»²½£¬°Ñ½âÎöµÄprotocolÀàĞÅÏ¢£¬´æÈëÊı¾İ¿â
+	//æ¥ä¸‹æ¥ä¸€æ­¥ï¼ŒæŠŠè§£æçš„protocolç±»ä¿¡æ¯ï¼Œå­˜å…¥æ•°æ®åº“
 	if (messageCallback_(petRowContent_) == -1) {
 		std::cout << "access row failed!" << std::endl;
 	}
@@ -64,4 +64,4 @@ void PetProtocMessCodec::parseTypePet(const MessagePtr& message) {
 
 
 
-const std::string PetProtocMessCodec::TypePet = "contactproto.PetProto";
+const std::string PetProtocMessCodec::TypePet = "petproto.PetProto";
