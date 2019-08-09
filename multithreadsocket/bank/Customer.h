@@ -10,7 +10,7 @@ class Customer {
 public:
 	Customer(const std::string& name, const int& requestTime, const long long& arriveTime, const int& delayTime = 10)
 			: name_(name), requestTime_(requestTime), consumeTime_(), arriveTime_(arriveTime),
-			leaveTime_(), remainTime_(), queueUpId_(), delayTime_(delayTime) {
+			leaveTime_(), remainTime_(requestTime), queueUpId_(), delayTime_(delayTime) {
 		
 	}
 	Customer(const std::string& name)
@@ -79,5 +79,6 @@ private:
 
 
 #endif // !_CUSTOMER_H_
+
 
 
