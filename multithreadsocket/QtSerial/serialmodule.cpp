@@ -193,6 +193,8 @@ void SerialModule::testWriteData()
     int type = 0x50;
     int command = 0x51;
     int dataLength = 10;
+    //这个数组是局部变量,后续使用了信号槽，会离开当前作用域，指针data也就释放了，内容变得不确定，所以打印的结果也不准确
+    //所以如果要打包，一定要用成员指针变量或成员数组。
     char data[] = {97,98,99,100,101,102,103,104,105,106};
     packageMessageFrame(type, command, data, dataLength);
 }
